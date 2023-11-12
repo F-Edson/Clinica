@@ -1,0 +1,13 @@
+clinica\servico\PacienteServico.class
+clinica\servico\ProfissionalServico.class
+com\mycompany\clinica\resources\JakartaEE8Resource.class
+clinica\modelo\Agendamento.class
+clinica\modelo\Paciente.class
+clinica\controle\ProfissionalControle.class
+clinica\mensagem\Mensagem.class
+com\mycompany\clinica\JakartaRestConfiguration.class
+clinica\controle\AgendamentoControle.class
+clinica\modelo\Profissional.class
+clinica\modelo\Endereco.class
+clinica\servico\AgendamentoServico.class
+clinica\controle\PacienteControle.class

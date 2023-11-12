@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <link rel="stylesheet" href="../css/TelaPaciente.css"/>
+
+    <h:head>
+        <title>Paciente</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="growl" showDetail="true" />
+
+            <div class="barra-pesquisa">
+
+                <p:commandButton icon="pi pi-plus" value="Novo" oncomplete="PF('cadastroPaciente').show()"  update="dataTablePaciente"  process="@this"  style=" background: rgb(107 139 165); border: 1px solid rgb(152 171 187);"  />
+                <div>
+
+                    <p:commandButton icon="pi pi-search"  action="#{pacienteControle.pesquisarPaciente()}"  update="dataTablePaciente"  process="@this"     styleClass="rounded-button ui-button-success" style="background: rgb(107 139 165); border: 1px solid rgb(152 171 187);"  />
+                </div>
+
+            </div>
+
+
+            <div class="conteiner">
+
+                <p:dataTable id="dataTablePaciente" var="p" value="#{pacienteControle.pacientes}" editable="true"
+                             style="margin-bottom:20px">
+
+                    <p:ajax event="rowEdit" listener="#{pacienteControle.atualizarPaciente(p)}" update="dataTablePaciente"/>
+                    <p:ajax event="rowEditCancel" update="dataTablePaciente"/>
+
+                    <p:column headerText="Nome"  filterBy="#{p.nome}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.nome}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText id="modelInput" value="#{p.nome}" style="width:100%"/>
+                                <h3>Endereço</h3>
+                                <p:inputText value="#{p.endereco.rua}" style="width:100%" placeholder="Rua"/>
+                                <p:inputText value="#{p.endereco.bairro}" style="width:100%" placeholder="Bairro"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="CPF">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.cpf}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputMask  mask="999.999.999-99" value="#{p.cpf}" style="width:100%;bottom: 30px" label="Name"/>
+                                <p:inputText value="#{p.endereco.numero}" style="width:100%; top: 30px" placeholder="Numero"/>
+                                <p:inputText value="#{p.endereco.cep}" style="width:100%; top: 30px;" placeholder="Cep"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Contato">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.contato}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputMask mask="(99) 999-999999" value="#{p.contato}" style="width:100%; bottom: 30px;" label="Name"/>
+                                <p:inputText value="#{p.endereco.uf}" style="width:100%;top: 30px" placeholder="UF"/>
+                                <p:inputText value="#{p.endereco.complemento}" style="width:100%; top: 30px" placeholder="Complemento"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column  headerText="Endereço" >
+                        <p:cellEditor >
+                            <f:facet name="output">
+                                <h:outputText value="Rua:#{p.endereco.rua}, Bairro:#{p.endereco.bairro}, Numero:#{p.endereco.numero}, Cep:#{p.endereco.cep}, UF:#{p.endereco.uf}, Complemento:#{p.endereco.complemento}"/>
+                            </f:facet>
+                            <f:facet name="input" >
+                                <div class="input-endereco">  </div>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column>
+                        <div style="position: absolute; margin-left: 65px; margin-top: -2px; ">
+
+                            <p:commandButton actionListener="#{pacienteControle.removerPaciente(p)}" update="dataTablePaciente "  process="@this"   styleClass="btn-trash" icon="pi pi-trash">
+                                <p:confirm header="Confirme" message="Deseja excluir este Paciente?" icon="pi pi-info-circle"/>
+                            </p:commandButton>
+                        </div>
+                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                    </p:column>
+
+                </p:dataTable>
+
+
+
+                <div class="dialog">
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                        <div style="display: flex; gap: 3rem; align-items: center; justify-content: center">
+                            <p:commandButton value="Sim" type="button"  style="background: red;"  styleClass="ui-confirmdialog-yes" />
+                            <p:commandButton value="Não" type="button"  style="background: limegreen; color: white;"  styleClass="ui-confirmdialog-no ui-button-flat" />
+                        </div>
+                    </p:confirmDialog>
+
+                    <p:dialog  header="Cadastrar Paciente" widgetVar="cadastroPaciente" resizable="false" modal="true">
+                        <p:panel   >
+                            <h:panelGrid columns="4" id="dadosPacientes"  >
+
+                                <p:outputLabel value="Nome"/>
+                                <p:inputText value="#{pacienteControle.paciente.nome}"  required="true"  />
+
+                                <p:outputLabel value="CPF" />
+                                <p:inputMask mask="999.999.999-99" value="#{pacienteControle.paciente.cpf}"  required="true"   /> 
+
+                                <p:outputLabel value="Contato" />
+                                <p:inputMask   value="#{pacienteControle.paciente.contato}"  mask="(99) 999-999999" />
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <hr style="border: none"   />
+
+                        <p:panel header="Endereço"   id="dadosEndereco" >
+                            <h:panelGrid columns="4">
+                                <p:outputLabel value="Rua"/>
+                                <p:inputText value="#{pacienteControle.paciente.endereco.rua}"  />
+
+                                <p:outputLabel value="Número" />
+                                <p:inputText value="#{pacienteControle.paciente.endereco.numero}"  />
+
+                                <p:outputLabel value="Bairro" />
+                                <p:inputText value="#{pacienteControle.paciente.endereco.bairro}" />
+
+                                <p:outputLabel value="UF" />
+                                <p:inputText value="#{pacienteControle.paciente.endereco.uf}" />
+
+                                <p:outputLabel value="CEP" />
+                                <p:inputText value="#{pacienteControle.paciente.endereco.cep}" />
+
+                                <p:outputLabel value="Complemento" />
+                                <p:inputText value="#{pacienteControle.paciente.endereco.complemento}" />
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <hr style="border: none"   />
+
+                        <p:commandButton value="Salvar"  update="dataTablePaciente dadosPacientes dadosEndereco growl  "  actionListener="#{pacienteControle.salvarPaciente()}"   oncomplete="PF('cadastroPaciente').hide()" style=" background: rgb(107 139 165); border: 1px solid rgb(152 171 187);" />
+                    </p:dialog>
+
+                </div>
+
+                <a href="../index.xhtml" class="link">
+                    <p:button icon="pi pi-reply" styleClass="btn-voltar"></p:button>
+
+                </a>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

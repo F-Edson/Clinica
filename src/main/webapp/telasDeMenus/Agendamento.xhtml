@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <link rel="stylesheet" href="../css/TelaAgendamento.css"/>
+
+    <h:head>
+        <title>Agendamento</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="growl" showDetail="true" />
+
+
+            <div class="barra-pesquisa">
+                <p:commandButton  icon="pi pi-plus" value="Agendar" oncomplete="PF('modalDialog').show()" style=" background: rgb(107 139 165); border: 1px solid rgb(152 171 187);"  />
+
+                <div class="calendario">
+                    <p:datePicker id="button" value="#{agendamentoControle.dataFiltro}"  showIcon="true" placeholder="Agenda do dia" >
+                        <p:ajax event="dateSelect" update="dataTableAgendamento" process="@this" listener="#{agendamentoControle.filtrarPorData}" />
+                    </p:datePicker>
+                </div>
+
+                <div>
+                    <p:commandButton  icon="pi pi-search"  action="#{agendamentoControle.pesquisarAgendamento()}"  update="dataTableAgendamento "   process="@this"  styleClass="rounded-button ui-button-success" style="background: rgb(107 139 165); border: 1px solid rgb(152 171 187);"  />
+                </div>
+            </div>
+
+            <div class="conteiner">
+                <p:dataTable id="dataTableAgendamento" var="Agen" value="#{agendamentoControle.agendamentos}" editable="true"
+                             style="margin-bottom:20px">
+
+                    <p:growl id="growl" showDetail="true" />
+                    <p:ajax event="rowEdit" listener="#{agendamentoControle.atualizarAgendamento(Agen)}"   update="dataTableAgendamento growl  " />
+                    <p:ajax event="rowEditCancel" update="dataTableAgendamento"/>
+
+                    <p:column headerText="Paciente"   filterBy="#{Agen.pacienteSelecionado}" >
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{Agen.pacienteSelecionado}"/></f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{Agen.pacienteSelecionado}" style="width:100%">
+                                    <f:selectItems value="#{agendamentoControle.pacientes}" var="paciente"
+                                                   itemLabel="#{paciente.nome}" itemValue="#{paciente.nome}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+
+                    <p:column headerText="Profissional">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{Agen.profissionalSelecionado}"/></f:facet>
+                            <f:facet name="input">
+                                <h:selectOneMenu value="#{Agen.profissionalSelecionado}" style="width:100%">
+                                    <f:selectItems value="#{agendamentoControle.profissinais}" var="profissional"
+                                                   itemLabel="#{profissional.nome}" itemValue="#{profissional.nome}"/>
+                                </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+
+
+                    <p:column headerText="Hora">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{Agen.hora}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:calendar pattern="HH:mm" value="#{Agen.hora}" timeOnly="true"  locale="pt_BR" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+
+                    <p:column headerText="Data"  >
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{Agen.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:calendar id="dataCal" pattern="dd/MM/yyyy"  value="#{Agen.data}" locale="pt_BR"  />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Descrição">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{Agen.descricao}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText  value="#{Agen.descricao}" style="width:100%" label="Name"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column>
+                        <div style="position: absolute; margin-left: 65px; margin-top: -2px">
+                            <p:commandButton   actionListener="#{agendamentoControle.removerAgendamento(Agen)}"    update="dataTableAgendamento growl"   process="@this"   styleClass="btn-trash" icon="pi pi-trash">
+                                <p:confirm header="Confirme" message="Deseja excluir este Profissional?" icon="pi pi-info-circle"/>
+                            </p:commandButton>
+                        </div>
+                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                    </p:column>
+                </p:dataTable>
+
+
+                <div class="dialog">
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                        <div style="display: flex; gap: 3rem; align-items: center; justify-content: center">
+                            <p:commandButton value="Sim" type="button"  style="background: red;"  styleClass="ui-confirmdialog-yes" />
+                            <p:commandButton value="Não" type="button"  style="background: limegreen; color: white;"  styleClass="ui-confirmdialog-no ui-button-flat" />
+                        </div>
+                    </p:confirmDialog>
+
+
+                    <p:dialog header="Agendamento" widgetVar="modalDialog" resizable="false" modal="true">
+                        <p:panel id="dadosAgendamento">
+                            <h:panelGrid columns="1">
+
+
+                                <p:selectOneMenu id="pacienteSelecionado" value="#{agendamentoControle.pacienteSelecionado}"   filter="true"  required="true" >
+                                    <f:selectItem itemLabel="Paciente" itemValue="" />
+                                    <f:selectItems value="#{agendamentoControle.pacientes}" var="paciente" itemLabel="#{paciente.nome}" itemValue="#{paciente.nome}" />
+                                </p:selectOneMenu>
+
+                                <hr style="border: none"/>
+
+                                <p:selectOneMenu id="profissionalSelecionado" value="#{agendamentoControle.profisionalSelecionado}"   filter="true"   required="true"  >
+                                    <f:selectItem itemLabel=" Profissional" itemValue="" />
+                                    <f:selectItems value="#{agendamentoControle.profissinais}" var="profissinal" itemLabel="#{profissinal.nome}" itemValue="#{profissinal.nome}"   />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="hora" value="Hora"   />
+                                <p:calendar id="hora" pattern="HH:mm" value="#{agendamentoControle.agendamento.hora}" timeOnly="true" locale="pt_BR"   required="true"  />
+
+                                <p:outputLabel value="Data" for="dataCal" />
+                                <p:calendar id="dataCal" pattern="dd/MM/yyyy" value="#{agendamentoControle.agendamento.data}" locale="pt_BR"  required="true" />
+
+                                <p:outputLabel value="Descrição"   />
+                                <p:inputText value="#{agendamentoControle.agendamento.descricao}"  required="true" />
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <hr  style="border: none;"/>
+
+                        <p:commandButton value="Salvar" action="#{agendamentoControle.salvarAgendamento()}"   update="dataTableAgendamento dadosAgendamento growl " oncomplete="PF('modalDialog').hide()"     style="background: rgb(107 139 165); border: 1px solid rgb(152 171 187);" />
+
+                    </p:dialog>
+
+                </div>
+
+                <a href="../index.xhtml" class="link">
+                    <p:button icon="pi pi-reply" styleClass="btn-voltar"></p:button>
+                </a>
+            </div>
+
+
+        </h:form>
+    </h:body>
+</html>
+

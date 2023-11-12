@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <link rel="stylesheet" href="../css/TelaProfissional.css"/>
+
+    <h:head>
+        <title>Profissional</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:growl id="growl" showDetail="true" />
+
+            <div class="barra-pesquisa">
+                <p:commandButton  icon="pi pi-plus" value="Novo" oncomplete="PF('modalDialog').show()" style=" background: rgb(107 139 165); border: 1px solid rgb(152 171 187);"  />
+                <div>
+                    <p:commandButton  icon="pi pi-search" actionListener="#{profissionalControle.pesquisaProfissional()}" update="dataTableProfissional"   process="@this"  styleClass="rounded-button ui-button-success" style="background: rgb(107 139 165); border: 1px solid rgb(152 171 187);"  />
+                </div>
+            </div>
+            <div class="conteiner">
+
+                <p:dataTable id="dataTableProfissional" var="p" value="#{profissionalControle.profissionais}" editable="true"
+                             style="margin-bottom:20px">
+
+                    <p:ajax event="rowEdit" listener="#{profissionalControle.atualizarDadosDoProfissional(p)}" update="dataTableProfissional"/>
+                    <p:ajax event="rowEditCancel" update="dataTableProfissional"/>
+
+                    <p:column headerText="Nome"  filterBy="#{p.nome}">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.nome}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText id="modelInput" value="#{p.nome}" style="width:100%"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="CPF">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.cpf}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{p.cpf}" style="width:100%" label="Name"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Especialidade">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.especialidade}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{p.especialidade}" style="width:100%" label="Name"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+
+                    <p:column headerText="Contato">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{p.contato}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputMask mask="(99) 999-999999" value="#{p.contato}" style="width:100%" label="Name"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column>
+                        <div style="position: absolute; margin-left: 65px; margin-top: -2px">
+
+                            <p:commandButton actionListener="#{profissionalControle.excluirProfissional(p)}" update="dataTableProfissional "  process="@this"   styleClass="btn-trash" icon="pi pi-trash">
+                                <p:confirm header="Confirme" message="Deseja excluir este Profissional?" icon="pi pi-info-circle"/>
+                            </p:commandButton>
+                        </div>
+                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                    </p:column>
+
+                </p:dataTable>
+
+
+                <div class="dialog">
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                        <div style="display: flex; gap: 3rem; align-items: center; justify-content: center">
+                            <p:commandButton value="Sim" type="button"  style="background: red;"  styleClass="ui-confirmdialog-yes" />
+                            <p:commandButton value="Não" type="button"  style="background: limegreen; color: white;"  styleClass="ui-confirmdialog-no ui-button-flat" />
+                        </div>
+                    </p:confirmDialog>
+
+
+                    <p:dialog  header="Cadastro do Profissional" widgetVar="modalDialog" resizable="false" modal="true">
+                        <p:panel id="dadosProfissional"  >
+                            <h:panelGrid columns="4"   >
+
+                                <p:outputLabel value="Nome"/>
+                                <p:inputText value="#{profissionalControle.profissional.nome}"  required="true" />
+
+                                <p:outputLabel value="CPF" />
+                                <p:inputMask mask="999.999.999-99" value="#{profissionalControle.profissional.cpf}"  required="true"   />
+
+                                <p:outputLabel value="Contato" />
+                                <p:inputMask   value="#{profissionalControle.profissional.contato}"  mask="(99) 999-999999"   required="true"/>
+
+                                <p:outputLabel value="Especialidade" />
+                                <p:inputMask value="#{profissionalControle.profissional.especialidade}"   required="true" />
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <hr style="border: none"   />
+
+
+                        <p:commandButton value="Salvar" action="#{profissionalControle.salvarProfissional()}" update=" dataTableProfissional   dadosProfissional growl " oncomplete="PF('modalDialog').hide()" style=" background: rgb(107 139 165); border: 1px solid rgb(152 171 187);" />
+                    </p:dialog>
+
+                </div>
+
+                <a href="../index.xhtml" class="link">
+                    <p:button icon="pi pi-reply" styleClass="btn-voltar"></p:button>
+                </a>
+
+            </div>
+        </h:form>
+    </h:body>
+</html>
+
