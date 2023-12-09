@@ -10,7 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"></link>
-    <link rel="stylesheet" href="../css/TelaLogin.css"/>
+    <link rel="stylesheet" href="/clinica/css/TelaLogin.css"/>
+
 
     <h:head>
         <title>Tela de login</title>
@@ -21,14 +22,14 @@
 
         <div class="conteiner">
             <h:form>
-                <img src="../img/logo.png" width="150" height="100" alt="logo"/>
+                <img src="/clinica/img/logo.png" width="150" height="100" alt="logo"/>
 
                 <span>Digite seu Login e Senha :</span>
-                <p:inputText value="" placeholder="Login" required="true" />
-                <p:inputText value="" placeholder="Senha" required="true" />
+                <p:inputText value="#{usuarioControle.usuario.login}" placeholder="Login" required="true" />
+                <p:inputText value="#{usuarioControle.usuario.senha}" placeholder="Senha" required="true" />
                 <a href="#" style="   text-decoration: none;">Esqueci minha senha</a>
-                <a href="TelaDeCadastro.xhtml" style="   text-decoration: none;">Realizar Cadastro</a>
-                <p:commandButton value="Entrar"  update="@form" style="border-radius: 20px;  background: #2994a7; border: 2px solid #d2cbd9; padding: 2px 29px 5px;" />
+                <a href="/clinica/telaDeLogin/TelaDeCadastro.xhtml" style="text-decoration: none;">Realizar Cadastro</a>
+                <p:commandButton action="#{usuarioControle.realizarLogin}" value="Entrar" update="@form" style="border-radius: 20px; background: #2994a7; border: 2px solid #d2cbd9; padding: 2px 29px 5px;" />
             </h:form>
         </div>
 

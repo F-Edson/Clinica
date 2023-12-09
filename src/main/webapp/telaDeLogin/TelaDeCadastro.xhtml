@@ -10,28 +10,25 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-
-    <link rel="stylesheet" href="../css/TelaLogin.css"/>
+    <link rel="stylesheet" href="/clinica/css/TelaLogin.css"/>
 
 
     <h:head>
         <title>Tela de cadastro</title>
     </h:head>
-
-  
     <h:body>
 
         <div class="conteiner">
             <h:form>
                 <h1>Cadastrar</h1>
                 <span>Crie seu Login e Senha :</span>
-                <p:inputText value="" placeholder="Login" required="true"  />
-                <p:inputText value="" placeholder="Email" required="true"  />
-                <p:inputText value="" placeholder="Senha" required="true"  />
+                <p:inputText value="#{usuarioControle.usuario.login}" placeholder="Login" required="true"  />
+                <p:inputText value="#{usuarioControle.usuario.email}" placeholder="Email" required="true"  />
+                <p:inputText value="#{usuarioControle.usuario.senha}" placeholder="Senha" required="true"  />
 
-                <a href="TelaLogin.xhtml">Voltar a tela de login </a>
+                <a href="/clinica/telaDeLogin/TelaLogin.xhtml">Voltar a tela de login </a>
 
-                <p:commandButton  update="@form"  value="Salvar"   style="border-radius: 20px;  background: #acb7b9; border: 2px solid #d2cbd9; padding: 2px 29px 5px;" />
+                <p:commandButton action="#{usuarioControle.cadastrar()}"   update="@form"  value="Salvar"   style="border-radius: 20px;  background: #acb7b9; border: 2px solid #d2cbd9; padding: 2px 29px 5px;" />
             </h:form>
 
         </div>

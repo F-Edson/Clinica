@@ -1,5 +1,8 @@
 clinica\servico\PacienteServico.class
 clinica\servico\ProfissionalServico.class
+clinica\modelo\Usuario.class
+UsuarioControle.class
+clinica\servico\UsuarioServico.class
 com\mycompany\clinica\resources\JakartaEE8Resource.class
 clinica\modelo\Agendamento.class
 clinica\modelo\Paciente.class
